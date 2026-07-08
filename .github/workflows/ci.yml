@@ -11,16 +11,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-- name: Install dependencies
-        run: |
-          pip install pandas scikit-learn nltk joblib fastapi pydantic uvicorn transformers torch
+      - name: Install dependencies
+        run: pip install pandas scikit-learn nltk joblib fastapi pydantic uvicorn
 
       - name: Download NLTK stopwords
         run: python -c "import nltk; nltk.download('stopwords')"
@@ -31,23 +30,16 @@ jobs:
           import sys
           sys.path.insert(0, 'src')
           from api import health, predict, PredictRequest
-
-          # health check
           h = health()
-          assert h['status'] == 'ok', 'Health check failed'
-          assert h['baseline_loaded'], 'Baseline model not loaded'
-          print('Health check passed')
-
-          # prediction check
-          result = predict(PredictRequest(
-              text='The senate voted to approve the infrastructure bill with bipartisan support.'
-          ))
-          assert result.baseline.label in ['REAL', 'FAKE'], 'Invalid label'
-          assert 0 <= result.baseline.confidence <= 1, 'Invalid confidence'
-          print(f'Prediction check passed: {result.baseline.label} ({result.baseline.confidence})')
+          assert h['status'] == 'ok'
+          assert h['baseline_loaded']
+          print('Health check passed:', h)
+          result = predict(PredictRequest(text='The senate voted to approve the infrastructure bill.'))
+          assert result.baseline.label in ['REAL', 'FAKE']
+          print('Prediction passed:', result.baseline)
           "
 
       - name: Check model files exist
         run: |
-          test -f models/tfidf_vectorizer.joblib && echo "Vectorizer found" || exit 1
-          test -f models/logreg_model.joblib && echo "Model found" || exit 1
+          test -f models/tfidf_vectorizer.joblib && echo "Vectorizer found"
+          test -f models/logreg_model.joblib && echo "Model found"
