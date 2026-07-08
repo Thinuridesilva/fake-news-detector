@@ -1,0 +1,53 @@
+name: Model Quality CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install pandas scikit-learn nltk joblib fastapi pydantic
+
+      - name: Download NLTK stopwords
+        run: python -c "import nltk; nltk.download('stopwords')"
+
+      - name: Test API health and prediction
+        run: |
+          python -c "
+          import sys
+          sys.path.insert(0, 'src')
+          from api import health, predict, PredictRequest
+
+          # health check
+          h = health()
+          assert h['status'] == 'ok', 'Health check failed'
+          assert h['baseline_loaded'], 'Baseline model not loaded'
+          print('Health check passed')
+
+          # prediction check
+          result = predict(PredictRequest(
+              text='The senate voted to approve the infrastructure bill with bipartisan support.'
+          ))
+          assert result.baseline.label in ['REAL', 'FAKE'], 'Invalid label'
+          assert 0 <= result.baseline.confidence <= 1, 'Invalid confidence'
+          print(f'Prediction check passed: {result.baseline.label} ({result.baseline.confidence})')
+          "
+
+      - name: Check model files exist
+        run: |
+          test -f models/tfidf_vectorizer.joblib && echo "Vectorizer found" || exit 1
+          test -f models/logreg_model.joblib && echo "Model found" || exit 1

@@ -1,0 +1,14 @@
+venv/
+__pycache__/
+*.pyc
+
+# raw + generated data (too big / not needed in git history)
+data/*.csv
+
+# trained models (track via Git LFS or just don't commit if large)
+models/*.joblib
+distilbert_fakenews/
+
+# outputs
+eda_outputs/
+eval_outputs/

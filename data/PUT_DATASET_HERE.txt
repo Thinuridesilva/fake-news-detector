@@ -1,0 +1,8 @@
+Put Fake.csv and True.csv here.
+
+Download from: https://www.kaggle.com/datasets/clmentbisaillon/fake-and-real-news-dataset
+
+After running src/preprocessing.py, this folder will also contain:
+- cleaned_news.csv
+- train.csv
+- test.csv
