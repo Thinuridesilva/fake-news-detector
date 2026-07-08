@@ -8,7 +8,7 @@ tracking, and GitHub Actions CI.
 ## Results
 
 | Model | Accuracy | F1 |
-|---|---|---|---|
+|---|---|---|
 | TF-IDF + Logistic Regression | 99.0% | 99.0% |
 | DistilBERT (fine-tuned) | 99.99% | 99.99% |
 
@@ -48,6 +48,8 @@ value of always building a strong baseline before reaching for expensive models.
 
 ## Project Structure
 
+```
+.
 ├── src/
 │   ├── data_loader.py            # Load and merge Fake.csv + True.csv
 │   ├── eda.py                    # Class balance, length, vocab, leakage check
@@ -57,15 +59,16 @@ value of always building a strong baseline before reaching for expensive models.
 │   ├── tokenize_for_bert.py      # Tokenize for DistilBERT
 │   ├── train_distilbert.py       # Fine-tune DistilBERT (run on GPU)
 │   └── evaluate.py               # Confusion matrix, ROC, error analysis
-├── api.py                        # FastAPI service (baseline + DistilBERT endpoints)
+├── api.py                        # FastAPI service
 ├── app.py                        # Gradio demo
 ├── Dockerfile                    # Container for the FastAPI service
 ├── requirements.txt              # Training dependencies
 ├── requirements_api.txt          # API serving dependencies
-├── .github/workflows/ci.yml      # GitHub Actions CI — runs on every push
+├── .github/workflows/ci.yml      # GitHub Actions CI
 ├── eda_outputs/                  # EDA plots
 ├── eval_outputs/                 # Confusion matrix, misclassified examples
 └── models/                       # Trained baseline model + vectorizer
+```
 
 ## API Endpoints
 
