@@ -18,9 +18,9 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
+- name: Install dependencies
         run: |
-          pip install pandas scikit-learn nltk joblib fastapi pydantic
+          pip install pandas scikit-learn nltk joblib fastapi pydantic uvicorn transformers torch
 
       - name: Download NLTK stopwords
         run: python -c "import nltk; nltk.download('stopwords')"
